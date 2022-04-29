@@ -1,15 +1,26 @@
 <template>
-  <q-page class="row items-center justify-evenly"> Hello! </q-page>
+  <q-page class="home">
+    <ProductList />
+  </q-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
+import ProductList from 'src/components/ProductList.vue'
 
 export default defineComponent({
   name: 'IndexPage',
-  components: {},
+  components: { ProductList },
   setup() {
     return {}
   }
 })
 </script>
+
+<style lang="scss">
+.home {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+</style>

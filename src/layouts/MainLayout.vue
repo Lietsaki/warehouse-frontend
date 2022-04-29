@@ -14,7 +14,16 @@
             no-caps
             text-color="dark"
             push
-            @click="manageLoginDialog(true)"
+            @click="manageDialog(login_dialog, true)"
+          />
+          <q-btn
+            color="accent"
+            :label="$t('signup.title')"
+            class="q-ml-md"
+            no-caps
+            text-color="dark"
+            push
+            @click="manageDialog(signup_dialog, true)"
           />
         </div>
       </q-toolbar>
@@ -26,7 +35,11 @@
 
     <LoginDialog
       :is_dialog_open="login_dialog.is_open"
-      @close-dialog="manageLoginDialog(false)"
+      @close-dialog="manageDialog(login_dialog, false)"
+    />
+    <SignupDialog
+      :is_dialog_open="signup_dialog.is_open"
+      @close-dialog="manageDialog(signup_dialog, false)"
     />
   </q-layout>
 </template>
@@ -34,17 +47,21 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import LoginDialog from 'src/components/LoginDialog.vue'
+import SignupDialog from 'src/components/SignupDialog.vue'
+import { SimpleDialog } from 'src/types/AppTypes'
 
 export default defineComponent({
   name: 'MainLayout',
-  components: { LoginDialog },
+  components: { LoginDialog, SignupDialog },
   setup() {
     const login_dialog = ref({ is_open: false })
-    const manageLoginDialog = (state: boolean) => {
-      login_dialog.value.is_open = state
+    const signup_dialog = ref({ is_open: false })
+
+    const manageDialog = (dialog: SimpleDialog, state: boolean) => {
+      dialog.is_open = state
     }
 
-    return { login_dialog, manageLoginDialog }
+    return { login_dialog, signup_dialog, manageDialog }
   }
 })
 </script>

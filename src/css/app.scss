@@ -2,3 +2,40 @@
 body {
   font-family: 'Orelega One', Roboto, Helvetica, Arial, sans-serif;
 }
+
+.form-dialog {
+  @media (min-width: $breakpoint-xs-max) {
+    width: 600px;
+
+    &__form {
+      width: 70%;
+      margin: 0 auto;
+    }
+  }
+
+  &__error {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+// Add a pretty cross-browser scrollbar
+.scrollify {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: transparent;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $scrollbar-color;
+    border-radius: 6px;
+    border: 3px solid $scrollbar-color;
+  }
+}

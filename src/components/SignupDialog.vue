@@ -11,7 +11,7 @@
       <!-- Card header. It contains the title and close button -->
       <q-card-section class="q-pa-none q-mb-sm">
         <q-toolbar class="bg-primary text-white">
-          <q-toolbar-title>{{ $t('login.extended_title') }}</q-toolbar-title>
+          <q-toolbar-title>{{ $t('signup.extended_title') }}</q-toolbar-title>
           <q-btn flat round dense icon="close" v-close-popup />
         </q-toolbar>
       </q-card-section>
@@ -19,21 +19,42 @@
       <q-form class="form-dialog__form">
         <q-card-section class="">
           <q-input
+            v-model="account.name"
+            :label="$t('name')"
+            filled
+            class="q-mb-md"
+          />
+          <q-input
+            v-model="account.surname"
+            :label="$t('surname')"
+            filled
+            class="q-mb-md"
+          />
+          <q-input
+            v-model="account.email"
             :label="$t('email')"
             filled
             class="q-mb-md"
             type="email"
-            v-model="credentials.email"
           />
           <q-input
+            v-model="account.password"
             :label="$t('password')"
             filled
-            v-model="credentials.password"
+            class="q-mb-md"
             type="password"
+          />
+          <q-select
+            :options="role_options"
+            v-model="account.role"
+            :label="$t('role')"
+            filled
+            emit-value
+            map-options
           />
         </q-card-section>
 
-        <q-item class="q-mb-sm" v-if="login_error">
+        <q-item class="q-mb-sm" v-if="validation_error">
           <q-item-section top avatar>
             <q-avatar
               color="negative"
@@ -45,7 +66,7 @@
 
           <q-item-section>
             <q-item-label>{{ $t('error') }}</q-item-label>
-            <q-item-label caption>{{ login_error }}</q-item-label>
+            <q-item-label caption>{{ validation_error }}</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -58,7 +79,7 @@
             push
             type="submit"
           >
-            {{ $t('login.title') }}
+            {{ $t('signup.title') }}
           </q-btn>
         </q-card-actions>
       </q-form>
@@ -70,7 +91,7 @@
 import { defineComponent, ref, computed } from 'vue'
 
 export default defineComponent({
-  name: 'LoginDialog',
+  name: 'SignupDialog',
   props: {
     is_dialog_open: {
       type: Boolean,
@@ -81,14 +102,22 @@ export default defineComponent({
   setup(props) {
     const is_open = computed(() => props.is_dialog_open)
 
-    const credentials = ref({
+    const account = ref({
+      name: '',
+      surname: '',
       email: '',
-      password: ''
+      password: '',
+      role: ''
     })
 
-    const login_error = ref('')
+    const role_options = [
+      { value: 'operator', label: 'Operator' },
+      { value: 'manager', label: 'Manager' }
+    ]
 
-    return { is_open, credentials, login_error }
+    const validation_error = ref('')
+
+    return { is_open, account, validation_error, role_options }
   }
 })
 </script>
