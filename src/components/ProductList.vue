@@ -2,13 +2,23 @@
   <div class="product-list">
     <div class="product-list__title">
       <h5 class="q-my-none q-ml-md text-dark">{{ $tc('product', 2) }}</h5>
-      <q-btn
-        push
-        round
-        icon="fa fa-rotate"
-        v-if="fetched_list"
-        @click="fetchProducts()"
-      ></q-btn>
+      <div>
+        <q-btn
+          v-if="user"
+          @click="create_product_dialog.is_open = true"
+          icon="add"
+          push
+          round
+          class="q-mr-md"
+        />
+        <q-btn
+          push
+          round
+          icon="fa fa-rotate"
+          v-if="fetched_list"
+          @click="fetchProducts()"
+        />
+      </div>
     </div>
 
     <div class="product-list__list q-mt-md scrollify">
@@ -51,6 +61,7 @@
               push
               color="negative"
               class="q-mr-sm"
+              @click="deleteProduct(product._id)"
             />
             <q-btn
               dense
@@ -59,6 +70,7 @@
               :label="$t('sell')"
               padding="0 10px"
               push
+              @click="performProductSale(product._id)"
             />
           </div>
 
@@ -98,22 +110,33 @@
         </div>
       </div>
     </div>
+
+    <CreateProductDialog
+      :is_dialog_open="create_product_dialog.is_open"
+      @close-dialog="create_product_dialog.is_open = false"
+      @success="handleProductInsert()"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { getAll, catchRequest } from 'src/api/API'
+import { getAll, deleteOne, sellProduct, catchRequest } from 'src/api/API'
+import CreateProductDialog from 'src/components/CreateProductDialog.vue'
 import { user } from 'src/api/store'
+import { useQuasar } from 'quasar'
+import t from 'src/api/i18n'
 
 export default defineComponent({
   name: 'ProductList',
   props: {},
-  components: {},
+  components: { CreateProductDialog },
   setup() {
+    const $q = useQuasar()
     const fetching_list = ref(false)
     const fetched_list = ref(false)
     const products = ref([])
+    const create_product_dialog = ref({ is_open: false })
 
     const fetchProducts = async () => {
       fetching_list.value = true
@@ -126,12 +149,48 @@ export default defineComponent({
       fetched_list.value = true
     }
 
+    const deleteProduct = async (product_id: string) => {
+      const success = await catchRequest(deleteOne, {
+        entity: 'product',
+        _id: product_id
+      })
+
+      if (success) {
+        $q.notify({
+          message: t('delete.success', { item: 'product' }),
+          color: 'positive'
+        })
+
+        await fetchProducts()
+      }
+    }
+
+    const performProductSale = async (product_id: string) => {
+      const success = await catchRequest(sellProduct, product_id)
+      if (success) {
+        $q.notify({
+          message: t('success_sold'),
+          color: 'positive'
+        })
+        await fetchProducts()
+      }
+    }
+
+    const handleProductInsert = async () => {
+      await fetchProducts()
+      create_product_dialog.value.is_open = false
+    }
+
     return {
       products,
       fetched_list,
       fetching_list,
       fetchProducts,
-      user
+      user,
+      deleteProduct,
+      performProductSale,
+      create_product_dialog,
+      handleProductInsert
     }
   }
 })

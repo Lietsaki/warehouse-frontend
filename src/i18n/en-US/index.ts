@@ -39,5 +39,8 @@ export default {
   unknown_error: 'Unknown error, please try again!',
   deleted_article: 'Deleted article',
   create: 'Create',
-  success_create: 'Succesfully created {item}!'
+  success_create: 'Succesfully created {item}!',
+  success_sold: 'Succesfully sold product!',
+  add_articles_to_product: 'Add articles to this product',
+  product_must_have_articles: 'A product must have at least one article'
 }

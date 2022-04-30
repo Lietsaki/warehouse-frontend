@@ -15,5 +15,27 @@ type User = {
   role: string
   last_updated: number
 }
+type ArticleToSelect = {
+  _id: string
+  name: string
+  stock: number
+  selected?: boolean
+  required_amount?: number
+}
+type ContainedArticlesUnpopulated = {
+  amount_of: number
+  art_id: string
+}
+type Product = {
+  name: string
+  contain_articles: ContainedArticlesUnpopulated[]
+}
 
-export { SimpleDialog, LoginCredentials, SignupBody, User }
+export {
+  SimpleDialog,
+  LoginCredentials,
+  SignupBody,
+  User,
+  ArticleToSelect,
+  Product
+}

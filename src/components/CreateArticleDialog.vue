@@ -13,7 +13,7 @@
       <q-card-section class="q-pa-none q-mb-sm">
         <q-toolbar class="bg-primary text-white">
           <q-toolbar-title
-            >{{ $t('create') }} {{ $tc('product', 1) }}</q-toolbar-title
+            >{{ $t('create') }} {{ $tc('article', 1) }}</q-toolbar-title
           >
           <q-btn flat round dense icon="close" v-close-popup />
         </q-toolbar>
@@ -63,7 +63,7 @@ import { useQuasar } from 'quasar'
 import t from 'src/api/i18n'
 
 export default defineComponent({
-  name: 'LoginDialog',
+  name: 'CreateArticleDialog',
   props: {
     is_dialog_open: {
       type: Boolean,
@@ -84,18 +84,17 @@ export default defineComponent({
     const insertArticle = async () => {
       loading.value = true
 
-      try {
-        await catchRequest(postRequest, {
-          entity: 'article',
-          body: article_body.value
-        })
+      const success = await catchRequest(postRequest, {
+        entity: 'article',
+        body: article_body.value
+      })
+
+      if (success) {
         $q.notify({
           message: t('success_create', { item: 'article' }),
           color: 'positive'
         })
         emit('close-dialog')
-      } catch (error) {
-        console.log(error)
       }
 
       loading.value = false

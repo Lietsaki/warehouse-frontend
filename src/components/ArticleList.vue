@@ -83,8 +83,8 @@
 import { defineComponent, ref } from 'vue'
 import { getAll, deleteOne, catchRequest } from 'src/api/API'
 import { user } from 'src/api/store'
-import { useQuasar } from 'quasar'
 import CreateArticleDialog from 'src/components/CreateArticleDialog.vue'
+import { useQuasar } from 'quasar'
 import t from 'src/api/i18n'
 
 export default defineComponent({
@@ -107,16 +107,18 @@ export default defineComponent({
     }
 
     const deleteArticle = async (art_id: string) => {
-      try {
-        await catchRequest(deleteOne, { entity: 'article', _id: art_id })
+      const success = await catchRequest(deleteOne, {
+        entity: 'article',
+        _id: art_id
+      })
+
+      if (success) {
         $q.notify({
           message: t('delete.success', { item: 'article' }),
           color: 'positive'
         })
 
         await fetchArticles()
-      } catch (error) {
-        console.log(error)
       }
     }
 

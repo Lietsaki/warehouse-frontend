@@ -43,6 +43,10 @@ const deleteOne = async (request_data: any) => {
   return await api.delete(`/${entity}/${_id}`)
 }
 
+const sellProduct = async (_id: string) => {
+  return await api.delete(`/product/sell/${_id}`)
+}
+
 const login = async (body: LoginCredentials) => {
   return await api.post('/login', body)
 }
@@ -58,5 +62,6 @@ export {
   deleteOne,
   login,
   signup,
+  sellProduct,
   setAuthorizationHeaders
 }
