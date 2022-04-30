@@ -1,16 +1,18 @@
 <template>
   <q-page class="home">
     <ProductList />
+    <ArticleList />
   </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ProductList from 'src/components/ProductList.vue'
+import ArticleList from 'src/components/ArticleList.vue'
 
 export default defineComponent({
   name: 'IndexPage',
-  components: { ProductList },
+  components: { ProductList, ArticleList },
   setup() {
     return {}
   }
@@ -22,5 +24,6 @@ export default defineComponent({
   padding: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  column-gap: 50px;
 }
 </style>

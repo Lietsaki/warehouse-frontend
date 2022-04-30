@@ -7,7 +7,7 @@
           {{ $t('app_title') }}
         </q-toolbar-title>
 
-        <div>
+        <div v-if="!user">
           <q-btn
             color="accent"
             :label="$t('login.title')"
@@ -24,6 +24,18 @@
             text-color="dark"
             push
             @click="manageDialog(signup_dialog, true)"
+          />
+        </div>
+        <div v-else class="ellipsis">
+          {{ user.name }}
+          <q-btn
+            color="accent"
+            :label="$t('logout.title')"
+            class="q-ml-md"
+            no-caps
+            text-color="dark"
+            push
+            @click="performLogout()"
           />
         </div>
       </q-toolbar>
@@ -49,11 +61,15 @@ import { defineComponent, ref } from 'vue'
 import LoginDialog from 'src/components/LoginDialog.vue'
 import SignupDialog from 'src/components/SignupDialog.vue'
 import { SimpleDialog } from 'src/types/AppTypes'
+import { user, logOut } from 'src/api/store'
+import { useQuasar } from 'quasar'
+import t from 'src/api/i18n'
 
 export default defineComponent({
   name: 'MainLayout',
   components: { LoginDialog, SignupDialog },
   setup() {
+    const $q = useQuasar()
     const login_dialog = ref({ is_open: false })
     const signup_dialog = ref({ is_open: false })
 
@@ -61,7 +77,21 @@ export default defineComponent({
       dialog.is_open = state
     }
 
-    return { login_dialog, signup_dialog, manageDialog }
+    const performLogout = () => {
+      logOut()
+      $q.notify({
+        message: t('logout.success'),
+        color: 'positive'
+      })
+    }
+
+    return {
+      login_dialog,
+      signup_dialog,
+      manageDialog,
+      user,
+      performLogout
+    }
   }
 })
 </script>

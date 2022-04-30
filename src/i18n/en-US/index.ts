@@ -2,11 +2,17 @@ export default {
   app_title: 'Warehouse',
   login: {
     title: 'Log In',
-    extended_title: 'Log Into Your Account'
+    extended_title: 'Log Into Your Account',
+    success: 'Welcome back, {name}'
   },
   signup: {
     title: 'Sign Up',
-    extended_title: 'Create an account'
+    extended_title: 'Create an account',
+    success: 'Success! You can now log in'
+  },
+  logout: {
+    title: 'Log Out',
+    success: 'Logged out'
   },
   error: 'ERROR!',
   email: 'Email',
@@ -14,8 +20,8 @@ export default {
   name: 'Name',
   surname: 'Surname',
   role: 'Role',
-  products: 'Products',
-  articles: 'Articles',
+  product: 'Product | Products',
+  article: 'Article | Articles',
   fetch: 'Fetch',
   sell: 'Sell',
   fetch_items: 'Fetch {items} list',
@@ -24,6 +30,14 @@ export default {
   articles_required: 'Articles required',
   delete: {
     title: 'Delete',
-    warning: 'Are you sure you want to delete this {item}?'
-  }
+    warning: 'Are you sure you want to delete this {item}?',
+    success: 'Succesfully deleted {item}!'
+  },
+  required_amount: 'Req. Amount',
+  stock: 'Stock',
+  required: 'required',
+  unknown_error: 'Unknown error, please try again!',
+  deleted_article: 'Deleted article',
+  create: 'Create',
+  success_create: 'Succesfully created {item}!'
 }

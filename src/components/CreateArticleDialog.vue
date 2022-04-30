@@ -12,45 +12,30 @@
       <!-- Card header. It contains the title and close button -->
       <q-card-section class="q-pa-none q-mb-sm">
         <q-toolbar class="bg-primary text-white">
-          <q-toolbar-title>{{ $t('login.title') }}</q-toolbar-title>
+          <q-toolbar-title
+            >{{ $t('create') }} {{ $tc('product', 1) }}</q-toolbar-title
+          >
           <q-btn flat round dense icon="close" v-close-popup />
         </q-toolbar>
       </q-card-section>
 
-      <q-form class="form-dialog__form" @submit="performLogin()">
+      <q-form class="form-dialog__form" @submit="insertArticle()">
         <q-card-section class="">
           <q-input
-            :label="$t('email')"
+            :label="$t('name')"
             filled
             class="q-mb-md"
-            type="email"
-            v-model="credentials.email"
-            :rules="[(val) => !!val || $t('email') + ' ' + $t('required')]"
+            v-model="article_body.name"
+            :rules="[(val) => !!val || $t('name') + ' ' + $t('required')]"
           />
           <q-input
-            :label="$t('password')"
+            :label="$t('stock')"
             filled
-            v-model="credentials.password"
-            type="password"
-            :rules="[(val) => !!val || $t('password') + ' ' + $t('required')]"
+            type="number"
+            v-model.number="article_body.stock"
+            :rules="[(val) => !!val || $t('stock') + ' ' + $t('required')]"
           />
         </q-card-section>
-
-        <q-item class="q-mb-sm q-pt-none" v-if="login_error">
-          <q-item-section top avatar>
-            <q-avatar
-              color="negative"
-              text-color="white"
-              square
-              icon="fa fa-face-dizzy"
-            />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>{{ $t('error') }}</q-item-label>
-            <q-item-label caption>{{ login_error }}</q-item-label>
-          </q-item-section>
-        </q-item>
 
         <q-card-actions class="flex justify-center">
           <q-btn
@@ -63,7 +48,7 @@
             :loading="loading"
             :disable="loading"
           >
-            {{ $t('login.title') }}
+            {{ $t('create') }}
           </q-btn>
         </q-card-actions>
       </q-form>
@@ -73,9 +58,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
-import { login } from 'src/api/API'
-import { setCurrentUser } from 'src/api/store'
-import { AxiosError } from 'axios'
+import { catchRequest, postRequest } from 'src/api/API'
 import { useQuasar } from 'quasar'
 import t from 'src/api/i18n'
 
@@ -91,43 +74,39 @@ export default defineComponent({
   setup(props, { emit }) {
     const $q = useQuasar()
     const is_open = computed(() => props.is_dialog_open)
-    const initial_credentials = {
-      email: '',
-      password: ''
+    const article_schema = {
+      name: '',
+      stock: ''
     }
-    const credentials = ref(initial_credentials)
-    const login_error = ref('')
+    const article_body = ref(article_schema)
     const loading = ref(false)
 
-    const performLogin = async () => {
+    const insertArticle = async () => {
       loading.value = true
 
       try {
-        const res = await login(credentials.value)
-        setCurrentUser(res.data.user, res.data.token)
-        login_error.value = ''
-
+        await catchRequest(postRequest, {
+          entity: 'article',
+          body: article_body.value
+        })
         $q.notify({
-          message: t('login.success', { name: res.data.user.name }),
+          message: t('success_create', { item: 'article' }),
           color: 'positive'
         })
         emit('close-dialog')
       } catch (error) {
-        const err = error as AxiosError
-        const message_from_api = err.response?.data?.message
-        login_error.value = message_from_api || t('unknown_error')
+        console.log(error)
       }
 
       loading.value = false
     }
 
-    const resetDialog = () => (credentials.value = { ...initial_credentials })
+    const resetDialog = () => (article_body.value = { ...article_schema })
 
     return {
       is_open,
-      credentials,
-      login_error,
-      performLogin,
+      article_body,
+      insertArticle,
       loading,
       resetDialog
     }

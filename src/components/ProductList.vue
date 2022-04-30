@@ -1,7 +1,7 @@
 <template>
   <div class="product-list">
     <div class="product-list__title">
-      <h5 class="q-my-none q-ml-md">{{ $t('products') }}</h5>
+      <h5 class="q-my-none q-ml-md text-dark">{{ $tc('product', 2) }}</h5>
       <q-btn
         push
         round
@@ -43,32 +43,57 @@
             {{ product.name }}
           </div>
 
+          <div class="product-item__actions" v-if="user">
+            <q-btn
+              dense
+              :label="$t('delete.title')"
+              padding="0 10px"
+              push
+              color="negative"
+              class="q-mr-sm"
+            />
+            <q-btn
+              dense
+              color="accent"
+              text-color="dark"
+              :label="$t('sell')"
+              padding="0 10px"
+              push
+            />
+          </div>
+
           <div class="product-item__articles">
             <q-expansion-item
+              dense
+              header-class="expansion-item"
               :label="
                 $t('articles_required') + ': ' + product.contain_articles.length
               "
             >
-              <q-card>
-                <q-card-section>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Quidem, eius reprehenderit eos corrupti commodi magni quaerat
-                  ex numquam, dolorum officiis modi facere maiores architecto
-                  suscipit iste eveniet doloribus ullam aliquid.
-                </q-card-section>
-              </q-card>
-            </q-expansion-item>
-          </div>
+              <div
+                v-for="(required_article, i) of product.contain_articles"
+                :key="required_article.art_id ? required_article.art_id._id : i"
+                class="articles-detail-container"
+              >
+                <div class="articles-detail" v-if="required_article.art_id">
+                  <div class="articles-detail__name">
+                    {{ required_article.art_id.name }}
+                  </div>
+                  <div class="articles-detail__amount">
+                    {{ $t('required_amount') }}:
+                    {{ required_article.art_id.stock }}
+                  </div>
+                  <div class="articles-detail__stock">
+                    {{ $t('stock') }}:
+                    {{ required_article.amount_of }}
+                  </div>
+                </div>
 
-          <div class="product-item__actions">
-            <q-btn
-              dense
-              :label="$t('sell')"
-              padding="0 10px"
-              push
-              class="q-mr-sm"
-            />
-            <q-btn dense :label="$t('delete.title')" padding="0 10px" push />
+                <div v-else class="articles-detail">
+                  {{ $t('deleted_article') }}
+                </div>
+              </div>
+            </q-expansion-item>
           </div>
         </div>
       </div>
@@ -79,6 +104,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { getAll, catchRequest } from 'src/api/API'
+import { user } from 'src/api/store'
 
 export default defineComponent({
   name: 'ProductList',
@@ -100,7 +126,13 @@ export default defineComponent({
       fetched_list.value = true
     }
 
-    return { products, fetched_list, fetching_list, fetchProducts }
+    return {
+      products,
+      fetched_list,
+      fetching_list,
+      fetchProducts,
+      user
+    }
   }
 })
 </script>
@@ -121,6 +153,7 @@ export default defineComponent({
 
   &__list {
     height: 80vh;
+    color: #333;
 
     &--message {
       color: $grey-7;
@@ -138,9 +171,50 @@ export default defineComponent({
   background-color: $grey-4;
   display: grid;
   grid-template-columns: 30% 40% 30%;
+  grid-template-rows: 15px 1fr;
   align-items: center;
   padding: 18px 0 18px 20px;
   margin: 25px;
+  box-shadow: 2px 3px 7px $subtle-shadow;
+
+  &__name {
+    grid-column: 1 / 3;
+    padding: 8px 16px;
+  }
+
+  &__articles {
+    grid-column: 1 / -1;
+    padding-right: 30px;
+    margin-top: 20px;
+
+    .expansion-item {
+      border-radius: 30px;
+      margin-bottom: 10px;
+    }
+
+    .articles-detail-container {
+      margin-top: 15px;
+
+      &:first-child {
+        margin-top: 0px;
+      }
+
+      .articles-detail {
+        border-radius: 30px;
+        background-color: $grey-2;
+        display: grid;
+        grid-template-columns: 40% 30% 30%;
+        padding: 5px 10px 5px 20px;
+        box-shadow: 2px 3px 7px $subtle-shadow;
+
+        &__amount,
+        &__stock {
+          border-left: 2px solid $grey-5;
+          padding-left: 8px;
+        }
+      }
+    }
+  }
 
   &__actions {
     display: flex;

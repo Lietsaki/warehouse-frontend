@@ -3,6 +3,7 @@
     persistent
     :model-value="is_open"
     @hide="$emit('close-dialog')"
+    @before-show="resetDialog()"
     :maximized="$q.screen.lt.sm"
     transition-show="jump-right"
     transition-hide="jump-left"
@@ -16,19 +17,21 @@
         </q-toolbar>
       </q-card-section>
 
-      <q-form class="form-dialog__form">
+      <q-form class="form-dialog__form" @submit="performSignup()">
         <q-card-section class="">
           <q-input
             v-model="account.name"
             :label="$t('name')"
             filled
             class="q-mb-md"
+            :rules="[(val) => !!val || $t('name') + ' ' + $t('required')]"
           />
           <q-input
             v-model="account.surname"
             :label="$t('surname')"
             filled
             class="q-mb-md"
+            :rules="[(val) => !!val || $t('surname') + ' ' + $t('required')]"
           />
           <q-input
             v-model="account.email"
@@ -36,6 +39,7 @@
             filled
             class="q-mb-md"
             type="email"
+            :rules="[(val) => !!val || $t('email') + ' ' + $t('required')]"
           />
           <q-input
             v-model="account.password"
@@ -43,6 +47,7 @@
             filled
             class="q-mb-md"
             type="password"
+            :rules="[(val) => !!val || $t('password') + ' ' + $t('required')]"
           />
           <q-select
             :options="role_options"
@@ -51,10 +56,11 @@
             filled
             emit-value
             map-options
+            :rules="[(val) => !!val || $t('role') + ' ' + $t('required')]"
           />
         </q-card-section>
 
-        <q-item class="q-mb-sm" v-if="validation_error">
+        <q-item class="q-mb-sm q-pt-none" v-if="signup_error">
           <q-item-section top avatar>
             <q-avatar
               color="negative"
@@ -66,7 +72,7 @@
 
           <q-item-section>
             <q-item-label>{{ $t('error') }}</q-item-label>
-            <q-item-label caption>{{ validation_error }}</q-item-label>
+            <q-item-label caption>{{ signup_error }}</q-item-label>
           </q-item-section>
         </q-item>
 
@@ -78,6 +84,8 @@
             padding="3px 20px"
             push
             type="submit"
+            :disable="loading"
+            :loading="loading"
           >
             {{ $t('signup.title') }}
           </q-btn>
@@ -89,6 +97,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
+import { signup } from 'src/api/API'
+import { AxiosError } from 'axios'
+import { useQuasar } from 'quasar'
+import t from 'src/api/i18n'
 
 export default defineComponent({
   name: 'SignupDialog',
@@ -99,25 +111,55 @@ export default defineComponent({
     }
   },
   components: {},
-  setup(props) {
+  setup(props, { emit }) {
+    const $q = useQuasar()
     const is_open = computed(() => props.is_dialog_open)
-
-    const account = ref({
+    const account_schema = {
       name: '',
       surname: '',
       email: '',
       password: '',
       role: ''
-    })
-
+    }
+    const account = ref(account_schema)
     const role_options = [
       { value: 'operator', label: 'Operator' },
       { value: 'manager', label: 'Manager' }
     ]
+    const signup_error = ref('')
+    const loading = ref(false)
 
-    const validation_error = ref('')
+    const performSignup = async () => {
+      loading.value = true
 
-    return { is_open, account, validation_error, role_options }
+      try {
+        await signup(account.value)
+        signup_error.value = ''
+        $q.notify({
+          message: t('signup.success'),
+          color: 'positive'
+        })
+        emit('close-dialog')
+      } catch (error) {
+        const err = error as AxiosError
+        const message_from_api = err.response?.data?.message
+        signup_error.value = message_from_api || t('unknown_error')
+      }
+
+      loading.value = false
+    }
+
+    const resetDialog = () => (account.value = { ...account_schema })
+
+    return {
+      is_open,
+      account,
+      signup_error,
+      role_options,
+      performSignup,
+      loading,
+      resetDialog
+    }
   }
 })
 </script>
