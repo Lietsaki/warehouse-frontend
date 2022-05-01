@@ -42,5 +42,9 @@ export default {
   success_create: 'Succesfully created {item}!',
   success_sold: 'Succesfully sold product!',
   add_articles_to_product: 'Add articles to this product',
-  product_must_have_articles: 'A product must have at least one article'
+  product_must_have_articles: 'A product must have at least one article',
+  upload_from_file: 'Upload from file',
+  select_or_drop_file: 'Select or drop a .json file here',
+  file_upload_success: 'Succesfully uploaded {items} from file!',
+  missing_property_in_file: "Missing '{prop}' array"
 }

@@ -25,5 +25,9 @@ export default defineComponent({
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 50px;
+
+  @media (max-width: $breakpoint-xs-max) {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

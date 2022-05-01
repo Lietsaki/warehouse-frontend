@@ -38,6 +38,11 @@ const postRequest = async (request_data: any) => {
   return await api.post(`/${entity}`, body)
 }
 
+const insertManyRequest = async (request_data: any) => {
+  const { entity, items } = request_data
+  return await api.post(`/${entity}/insertMany`, { items })
+}
+
 const deleteOne = async (request_data: any) => {
   const { entity, _id } = request_data
   return await api.delete(`/${entity}/${_id}`)
@@ -63,5 +68,6 @@ export {
   login,
   signup,
   sellProduct,
-  setAuthorizationHeaders
+  setAuthorizationHeaders,
+  insertManyRequest
 }

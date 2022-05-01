@@ -37,6 +37,22 @@
           />
         </q-card-section>
 
+        <q-card-section class="">
+          <div class="q-mb-sm">{{ $t('upload_from_file') }}</div>
+
+          <q-file
+            :label="$t('select_or_drop_file')"
+            accept="application/JSON"
+            outlined
+            @update:model-value="(new_val) => uploadProductFile(new_val)"
+            v-model="articles_file"
+          >
+            <template v-slot:prepend>
+              <q-icon name="attach_file" />
+            </template>
+          </q-file>
+        </q-card-section>
+
         <q-card-actions class="flex justify-center">
           <q-btn
             class="q-mb-sm"
@@ -58,7 +74,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
-import { catchRequest, postRequest } from 'src/api/API'
+import { catchRequest, postRequest, insertManyRequest } from 'src/api/API'
 import { useQuasar } from 'quasar'
 import t from 'src/api/i18n'
 
@@ -80,6 +96,7 @@ export default defineComponent({
     }
     const article_body = ref(article_schema)
     const loading = ref(false)
+    const articles_file = ref(null)
 
     const insertArticle = async () => {
       loading.value = true
@@ -94,20 +111,64 @@ export default defineComponent({
           message: t('success_create', { item: 'article' }),
           color: 'positive'
         })
-        emit('close-dialog')
+        emit('success')
       }
 
       loading.value = false
     }
 
-    const resetDialog = () => (article_body.value = { ...article_schema })
+    const resetDialog = () => {
+      article_body.value = { ...article_schema }
+      articles_file.value = null
+    }
+
+    const uploadProductFile = (received_file: File) => {
+      const reader = new FileReader()
+
+      reader.onload = async (event) => {
+        loading.value = true
+        const file_data = event.target!.result as string
+        const parsed_data = JSON.parse(file_data)
+
+        if (!parsed_data.inventory) {
+          loading.value = false
+          articles_file.value = null
+          return $q.notify({
+            message: t('missing_property_in_file', { prop: 'inventory' }),
+            color: 'negative'
+          })
+        }
+
+        const success = await catchRequest(insertManyRequest, {
+          entity: 'article',
+          items: parsed_data.inventory
+        })
+
+        if (success) {
+          $q.notify({
+            message: t('file_upload_success', { items: 'articles' }),
+            color: 'positive'
+          })
+
+          emit('success')
+        } else {
+          articles_file.value = null
+        }
+
+        loading.value = false
+      }
+
+      reader.readAsText(received_file)
+    }
 
     return {
       is_open,
       article_body,
       insertArticle,
       loading,
-      resetDialog
+      resetDialog,
+      articles_file,
+      uploadProductFile
     }
   }
 })

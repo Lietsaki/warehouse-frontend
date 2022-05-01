@@ -75,6 +75,7 @@
     <CreateArticleDialog
       :is_dialog_open="create_article_dialog.is_open"
       @close-dialog="create_article_dialog.is_open = false"
+      @success="handleArticleInsert()"
     />
   </div>
 </template>
@@ -122,6 +123,11 @@ export default defineComponent({
       }
     }
 
+    const handleArticleInsert = async () => {
+      await fetchArticles()
+      create_article_dialog.value.is_open = false
+    }
+
     return {
       articles,
       fetched_list,
@@ -129,7 +135,8 @@ export default defineComponent({
       fetchArticles,
       deleteArticle,
       user,
-      create_article_dialog
+      create_article_dialog,
+      handleArticleInsert
     }
   }
 })
@@ -162,6 +169,12 @@ export default defineComponent({
       justify-content: center;
     }
   }
+
+  @media (max-width: $breakpoint-xs-max) {
+    &__list {
+      height: 36vh;
+    }
+  }
 }
 
 .article-item {
@@ -181,6 +194,18 @@ export default defineComponent({
 
   &__actions {
     padding-right: 10px;
+  }
+
+  @media (max-width: $breakpoint-xs-max) {
+    padding: 20px 20px 20px 0px;
+    border-radius: 10px;
+    margin: 20px;
+    grid-template-columns: 1fr auto auto;
+    column-gap: 15px;
+
+    button span {
+      font-size: 10px;
+    }
   }
 }
 </style>

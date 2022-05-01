@@ -223,6 +223,14 @@ export default defineComponent({
       justify-content: center;
     }
   }
+
+  @media (max-width: $breakpoint-xs-max) {
+    margin-bottom: 30px;
+
+    &__list {
+      height: 32vh;
+    }
+  }
 }
 
 .product-item {
@@ -277,6 +285,27 @@ export default defineComponent({
 
   &__actions {
     display: flex;
+  }
+
+  @media (max-width: $breakpoint-xs-max) {
+    padding: 20px 0 9px 20px;
+    border-radius: 10px;
+    margin: 10px 10px 15px 10px;
+    grid-template-columns: 30% 36% 30%;
+
+    button span {
+      font-size: 10px;
+    }
+
+    &__articles {
+      padding-right: 1px;
+    }
+
+    .articles-detail-container .articles-detail {
+      border-radius: 12px;
+      font-size: 12px;
+      align-items: center;
+    }
   }
 }
 </style>

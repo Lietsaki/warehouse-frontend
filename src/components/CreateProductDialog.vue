@@ -20,7 +20,7 @@
       </q-card-section>
 
       <q-form class="create-product__form" @submit="insertProduct()">
-        <q-card-section class="">
+        <q-card-section class="q-pa-sm">
           <q-input
             :label="$t('name')"
             filled
@@ -70,6 +70,22 @@
           </div>
         </q-card-section>
 
+        <q-card-section class="">
+          <div class="q-mb-sm">{{ $t('upload_from_file') }}</div>
+
+          <q-file
+            :label="$t('select_or_drop_file')"
+            accept="application/JSON"
+            outlined
+            @update:model-value="(new_val) => uploadProductFile(new_val)"
+            v-model="products_file"
+          >
+            <template v-slot:prepend>
+              <q-icon name="attach_file" />
+            </template>
+          </q-file>
+        </q-card-section>
+
         <q-card-actions class="flex justify-center">
           <q-btn
             class="q-mb-sm"
@@ -91,7 +107,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
-import { catchRequest, postRequest, getAll } from 'src/api/API'
+import {
+  catchRequest,
+  postRequest,
+  getAll,
+  insertManyRequest
+} from 'src/api/API'
 import { ArticleToSelect, Product } from 'src/types/AppTypes'
 import { useQuasar } from 'quasar'
 import t from 'src/api/i18n'
@@ -116,6 +137,7 @@ export default defineComponent({
     const insertingProduct = ref(false)
     const loading_articles = ref(false)
     const articles = ref([])
+    const products_file = ref(null)
 
     const loadArticles = async () => {
       loading_articles.value = true
@@ -130,6 +152,7 @@ export default defineComponent({
 
     const resetDialog = async () => {
       product_body.value = { ...product_schema }
+      products_file.value = null
       await loadArticles()
     }
 
@@ -178,6 +201,45 @@ export default defineComponent({
       insertingProduct.value = false
     }
 
+    const uploadProductFile = (received_file: File) => {
+      const reader = new FileReader()
+
+      reader.onload = async (event) => {
+        insertingProduct.value = true
+        const file_data = event.target!.result as string
+        const parsed_data = JSON.parse(file_data)
+
+        if (!parsed_data.products) {
+          insertingProduct.value = false
+          products_file.value = null
+          return $q.notify({
+            message: t('missing_property_in_file', { prop: 'products' }),
+            color: 'negative'
+          })
+        }
+
+        const success = await catchRequest(insertManyRequest, {
+          entity: 'product',
+          items: parsed_data.products
+        })
+
+        if (success) {
+          $q.notify({
+            message: t('file_upload_success', { items: 'products' }),
+            color: 'positive'
+          })
+
+          emit('success')
+        } else {
+          products_file.value = null
+        }
+
+        insertingProduct.value = false
+      }
+
+      reader.readAsText(received_file)
+    }
+
     return {
       is_open,
       product_body,
@@ -185,7 +247,9 @@ export default defineComponent({
       insertProduct,
       insertingProduct,
       resetDialog,
-      articles
+      articles,
+      products_file,
+      uploadProductFile
     }
   }
 })
@@ -196,42 +260,71 @@ export default defineComponent({
   @media (min-width: $breakpoint-xs-max) {
     width: 700px;
     max-width: 700px !important;
+  }
 
-    &__form {
-      width: 90%;
-      margin: 0 auto;
+  &__form {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .article-picker {
+    &__list {
+      margin-top: 5px;
+      background-color: $grey-3;
+      height: 250px;
+      border-radius: 10px;
+
+      .article-item {
+        border-radius: 50px;
+        background-color: $grey-2;
+        display: grid;
+        grid-template-columns: 1fr 40% auto;
+        align-items: center;
+        padding: 18px 0 18px 20px;
+        margin: 25px;
+        box-shadow: 2px 3px 7px $subtle-shadow;
+
+        &__name {
+          padding: 8px 16px;
+        }
+
+        &__stock {
+          label {
+            width: 100px;
+          }
+        }
+
+        &__actions {
+          padding-right: 10px;
+        }
+      }
     }
+  }
 
+  @media (max-width: $breakpoint-xs-max) {
     .article-picker {
       &__list {
-        margin-top: 5px;
-        background-color: $grey-3;
-        height: 250px;
-        border-radius: 10px;
+        height: 35vh;
 
         .article-item {
-          border-radius: 50px;
-          background-color: $grey-2;
-          display: grid;
-          grid-template-columns: 1fr 40% auto;
-          grid-template-rows: 15px 1fr;
-          align-items: center;
-          padding: 18px 0 18px 20px;
-          margin: 25px;
-          box-shadow: 2px 3px 7px $subtle-shadow;
+          border-radius: 8px;
+          padding: 20px 5px 20px 6px;
+          grid-template-columns: 1fr 50% auto;
+          margin: 15px;
+          font-size: 12px;
 
           &__name {
-            padding: 8px 16px;
+            padding: 8px 0px 8px 6px;
           }
 
           &__stock {
             label {
-              width: 100px;
+              width: 70px;
             }
           }
 
           &__actions {
-            padding-right: 10px;
+            padding-right: 0;
           }
         }
       }

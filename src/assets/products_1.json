@@ -1,0 +1,38 @@
+{
+  "products": [
+    {
+      "name": "dining chair",
+      "contain_articles": [
+        {
+          "art_id": "626ade7fe2315c377905719e",
+          "amount_of": "4"
+        },
+        {
+          "art_id": "626d8711836c26311850be42",
+          "amount_of": "8"
+        },
+        {
+          "art_id": "626d944f836c26311850be6c",
+          "amount_of": "1"
+        }
+      ]
+    },
+    {
+      "name": "dining table",
+      "contain_articles": [
+        {
+          "art_id": "626d9472836c26311850be6f",
+          "amount_of": "4"
+        },
+        {
+          "art_id": "626d948f836c26311850be72",
+          "amount_of": "8"
+        },
+        {
+          "art_id": "626d96cf836c26311850be78",
+          "amount_of": "1"
+        }
+      ]
+    }
+  ]
+}
