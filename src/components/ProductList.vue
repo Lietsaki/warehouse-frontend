@@ -93,11 +93,11 @@
                   </div>
                   <div class="articles-detail__amount">
                     {{ $t('required_amount') }}:
-                    {{ required_article.art_id.stock }}
+                    {{ required_article.amount_of }}
                   </div>
                   <div class="articles-detail__stock">
                     {{ $t('stock') }}:
-                    {{ required_article.amount_of }}
+                    {{ required_article.art_id.stock }}
                   </div>
                 </div>
 
