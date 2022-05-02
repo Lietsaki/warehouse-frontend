@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from 'src/boot/axios'
 import { AxiosError } from 'axios'
-import { Notify } from 'quasar'
+import { Notify, LocalStorage } from 'quasar'
 import { LoginCredentials, SignupBody } from 'src/types/AppTypes'
 import t from './i18n'
 
-const setAuthorizationHeaders = (token: string) => {
-  if (token) {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    return
+const getAuthHeaders = () => {
+  return {
+    Authorization: LocalStorage.getItem('token')
   }
-  delete api.defaults.headers.common['Authorization']
 }
 
 const catchRequest = async (fn: (arg0: any) => any, request_data: any) => {
@@ -35,21 +33,25 @@ const getAll = async (request_data: any) => {
 
 const postRequest = async (request_data: any) => {
   const { entity, body } = request_data
-  return await api.post(`/${entity}`, body)
+  return await api.post(`/${entity}`, body, { headers: getAuthHeaders() })
 }
 
 const insertManyRequest = async (request_data: any) => {
   const { entity, items } = request_data
-  return await api.post(`/${entity}/insertMany`, { items })
+  return await api.post(
+    `/${entity}/insertMany`,
+    { items },
+    { headers: getAuthHeaders() }
+  )
 }
 
 const deleteOne = async (request_data: any) => {
   const { entity, _id } = request_data
-  return await api.delete(`/${entity}/${_id}`)
+  return await api.delete(`/${entity}/${_id}`, { headers: getAuthHeaders() })
 }
 
 const sellProduct = async (_id: string) => {
-  return await api.delete(`/product/sell/${_id}`)
+  return await api.delete(`/product/sell/${_id}`, { headers: getAuthHeaders() })
 }
 
 const login = async (body: LoginCredentials) => {
@@ -68,6 +70,5 @@ export {
   login,
   signup,
   sellProduct,
-  setAuthorizationHeaders,
   insertManyRequest
 }

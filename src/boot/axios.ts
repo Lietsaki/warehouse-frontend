@@ -1,6 +1,5 @@
 import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance } from 'axios'
-import { LocalStorage } from 'quasar'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -15,10 +14,7 @@ declare module '@vue/runtime-core' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: 'https://warehouse-test-01.herokuapp.com/v1',
-  headers: {
-    Authorization: LocalStorage.getItem('token')
-  }
+  baseURL: 'https://warehouse-test-01.herokuapp.com/v1'
 })
 
 export default boot(({ app }) => {
