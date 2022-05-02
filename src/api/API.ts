@@ -7,7 +7,6 @@ import t from './i18n'
 
 const setAuthorizationHeaders = (token: string) => {
   if (token) {
-    console.log('HEYY, your token', token)
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`
     return
   }
