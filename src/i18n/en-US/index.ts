@@ -27,7 +27,7 @@ export default {
   fetch_items: 'Fetch {items} list',
   no_items: 'Found zero {items}!',
   fetch_error: 'Error fetching data. Try again.',
-  articles_required: 'Articles required',
+  articles_required: 'Required Articles',
   delete: {
     title: 'Delete',
     warning: 'Are you sure you want to delete this {item}?',
