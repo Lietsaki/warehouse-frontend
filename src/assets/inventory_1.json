@@ -1,20 +1,20 @@
 {
   "inventory": [
     {
-      "name": "wooden leg 02",
+      "name": "Premium Table Top 001",
       "stock": "12"
     },
     {
-      "name": "screw 078",
+      "name": "Bolt 003",
       "stock": "17"
     },
     {
-      "name": "seat 2",
+      "name": "Seat 002",
       "stock": "21"
     },
     {
-      "name": "table top 087",
-      "stock": "17"
+      "name": "Metallic Chair Leg",
+      "stock": "40"
     }
   ]
 }

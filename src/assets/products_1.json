@@ -1,36 +1,32 @@
 {
   "products": [
     {
-      "name": "dining chair",
+      "name": "Minimalist Chair",
       "contain_articles": [
         {
-          "art_id": "626d93e7836c26311850be68",
+          "art_id": "626fb01bd111a06db82a443e",
           "amount_of": "4"
         },
         {
-          "art_id": "626d9472836c26311850be6f",
-          "amount_of": "8"
+          "art_id": "626fb37dd111a06db82a44b1",
+          "amount_of": "1"
         },
         {
-          "art_id": "626ee23800343ca31503da61",
-          "amount_of": "1"
+          "art_id": "626fb04bd111a06db82a4446",
+          "amount_of": "4"
         }
       ]
     },
     {
-      "name": "dining table",
+      "name": "Llama Wool Carpet",
       "contain_articles": [
         {
-          "art_id": "626ee23800343ca31503da62",
+          "art_id": "626fb3f1d111a06db82a44b7",
+          "amount_of": "2"
+        },
+        {
+          "art_id": "626fb1ced111a06db82a4478",
           "amount_of": "4"
-        },
-        {
-          "art_id": "626eeeb91dcd802293af8082",
-          "amount_of": "8"
-        },
-        {
-          "art_id": "626eeeb91dcd802293af8084",
-          "amount_of": "1"
         }
       ]
     }
