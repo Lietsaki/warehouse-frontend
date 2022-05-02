@@ -149,7 +149,10 @@ export default defineComponent({
       loading.value = false
     }
 
-    const resetDialog = () => (account.value = { ...account_schema })
+    const resetDialog = () => {
+      account.value = { ...account_schema }
+      signup_error.value = ''
+    }
 
     return {
       is_open,

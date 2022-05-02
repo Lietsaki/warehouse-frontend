@@ -121,7 +121,10 @@ export default defineComponent({
       loading.value = false
     }
 
-    const resetDialog = () => (credentials.value = { ...initial_credentials })
+    const resetDialog = () => {
+      credentials.value = { ...initial_credentials }
+      login_error.value = ''
+    }
 
     return {
       is_open,
