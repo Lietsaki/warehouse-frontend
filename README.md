@@ -12,6 +12,7 @@ List of features:
 - Sell products, meaning that the product gets deleted and its number of required articles is subtracted from the articles' stock (only if logged in).
 - Upload products in batch from a JSON file (only if logged in).
 - Upload articles in batch from a JSON file (only if logged in).
+- Responsiveness for mobile devices under 600px width.
 
 ## Install the dependencies
 ```bash
