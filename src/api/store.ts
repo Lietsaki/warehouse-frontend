@@ -15,9 +15,8 @@ const logOut = () => {
 }
 
 const setCurrentUser = (user_data: User, token: string) => {
-  console.log()
   LocalStorage.set('current_user', { ...user_data })
-  LocalStorage.set('token', token)
+  LocalStorage.set('token', `Bearer ${token}`)
   setAuthorizationHeaders(token)
   user.value = user_data
 }
